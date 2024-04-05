@@ -1,23 +1,30 @@
-import logo from './logo.svg';
+import React, { useEffect, useState } from 'react';
 import './App.css';
+import TaskList from './components/tasks';
+import { get_tasks } from './utils/tasks';
+
+async function fetchDataAndUpdateState(setTasks) {
+  try {
+    const tasksData = await get_tasks();
+    setTasks(tasksData);
+  } catch (error) {
+    console.error('Error fetching tasks:', error);
+  }
+}
 
 function App() {
+  const [tasks, setTasks] = useState([]);
+
+  useEffect(() => {
+    fetchDataAndUpdateState(setTasks);
+  }, []); // Empty dependency array ensures the effect runs only once when the component mounts
+
+  console.log(tasks);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>My Tasks</h1>
+      <TaskList tasks={tasks} />
     </div>
   );
 }
